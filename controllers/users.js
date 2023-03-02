@@ -47,8 +47,12 @@ const updateUser = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные' });
-      } else if (err.name === 'Not Found') {
+
+        return;
+      } if (err.name === 'Not Found') {
         res.status(404).send({ message: 'Пользователь не найден' });
+
+        return;
       }
       res.status(500).send({ message: err.message });
     });
@@ -62,8 +66,12 @@ const updateAvatar = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные' });
-      } else if (err.name === 'Not Found') {
+
+        return;
+      } if (err.name === 'Not Found') {
         res.status(404).send({ message: 'Пользователь не найден' });
+
+        return;
       }
       res.status(500).send({ message: err.message });
     });

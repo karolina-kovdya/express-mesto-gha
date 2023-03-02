@@ -8,6 +8,8 @@ const createCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные' });
+
+        return;
       }
       res.status(500).send({ message: err.message });
     });
@@ -49,8 +51,12 @@ const likeCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные' });
-      } else if (err.name === 'Not Found') {
+
+        return;
+      } if (err.name === 'Not Found') {
         res.status(404).send({ message: 'Карточка не найдена' });
+
+        return;
       }
       res.status(500).send({ message: err.message });
     });
@@ -66,8 +72,12 @@ const dislikeCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные' });
-      } else if (err.name === 'Not Found') {
+
+        return;
+      } if (err.name === 'Not Found') {
         res.status(404).send({ message: 'Карточка не найдена' });
+
+        return;
       }
       res.status(500).send({ message: err.message });
     });
