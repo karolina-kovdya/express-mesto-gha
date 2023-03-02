@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -16,8 +16,8 @@ const userSchema = new mongoose.Schema({
   avatar: {
     required: true,
     type: String,
-  }
-})
+  },
+});
 
 const User = mongoose.model('user', userSchema);
 
