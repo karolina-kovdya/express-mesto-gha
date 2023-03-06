@@ -15,7 +15,9 @@ app.use((req, res, next) => {
 });
 app.use('/', usersRouter);
 app.use('/', cardsRouter);
-app.use('*', (req, res) => res.status(statusError.NOT_FOUND.send({ message: 'Страница не найдена' })));
+app.use((req, res) => {
+  res.status(statusError.NOT_FOUND).send({ message: 'Страница не найдена' });
+});
 
 mongoose.set('runValidators', true);
 mongoose.connect('mongodb://localhost:27017/mestodb');
