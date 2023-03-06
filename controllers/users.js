@@ -19,7 +19,7 @@ const getUser = (req, res) => {
   User.findById(req.params.id)
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: 'Пользователь не найден' });
+        res.status(400).send({ message: 'Переданы некорректные данные, пользователь не найден' });
 
         return;
       }
@@ -44,15 +44,15 @@ const getUsers = (req, res) => {
 const updateUser = (req, res) => {
   const { name, about } = req.body;
 
-  User.findByIdAndUpdate(req.params.id, { name, about })
-    .then((user) => res.send({ data: user }))
+  User.findByIdAndUpdate(req.user_id, { name, about }, { new: true })
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные' });
 
         return;
       } if (err.name === 'Not Found') {
-        res.status(404).send({ message: 'Пользователь не найден' });
+        res.status(400).send({ message: 'Пользователь не найден' });
 
         return;
       }
@@ -63,8 +63,8 @@ const updateUser = (req, res) => {
 const updateAvatar = (req, res) => {
   const { avatar } = req.body;
 
-  User.findByIdAndUpdate(req.params.id, { avatar })
-    .then((user) => res.send({ data: user }))
+  User.findByIdAndUpdate(req.params.id, { avatar }, { new: true })
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные' });
