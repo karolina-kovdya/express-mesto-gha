@@ -17,7 +17,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', usersRouter);
 app.use('/', cardsRouter);
 
-mongoose.set('strictQuery', true);
+mongoose.set('runValidators', true);
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.listen(PORT, () => {

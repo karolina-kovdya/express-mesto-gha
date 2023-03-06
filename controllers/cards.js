@@ -55,7 +55,7 @@ const likeCard = (req, res) => {
 
         return;
       }
-      res.status(statusError.OK).send({ likes: card.likes });
+      res.status(statusError.OK).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -79,7 +79,7 @@ const dislikeCard = (req, res) => {
 
         return;
       }
-      res.status(statusError.OK).send({ likes: card.likes });
+      res.status(statusError.OK).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
