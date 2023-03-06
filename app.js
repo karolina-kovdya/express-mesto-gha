@@ -8,20 +8,17 @@ const app = express();
 
 const { PORT = 3000 } = process.env;
 
-mongoose.set('strictQuery', true);
-mongoose.connect('mongodb://localhost:27017/mestodb');
-
 app.use(express.json());
+app.use((req, res, next) => {
+  req.user = { _id: '63ff72b99ae9794447ff4fad' };
+  next();
+});
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', usersRouter);
 app.use('/', cardsRouter);
-app.use((req, res, next) => {
-  req.user = {
-    _id: '63ff72b99ae9794447ff4fad',
-  };
 
-  next();
-});
+mongoose.set('strictQuery', true);
+mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
