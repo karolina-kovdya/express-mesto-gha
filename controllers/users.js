@@ -24,7 +24,7 @@ const getUser = (req, res) => {
 
         return;
       }
-      res.status(statusSucces.OK).send(user);
+      res.send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
@@ -38,7 +38,7 @@ const getUser = (req, res) => {
 
 const getUsers = (req, res) => {
   User.find({})
-    .then((users) => res.status(statusSucces.OK).send(users))
+    .then((users) => res.send(users))
     .catch((err) => res.status(statusError.SERVER_ERROR).send({ message: `Произошла ошибка ${err.status}` }));
 };
 
@@ -52,7 +52,7 @@ const updateUser = (req, res) => {
 
         return;
       }
-      res.status(statusSucces.OK).send(user);
+      res.send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
@@ -68,7 +68,7 @@ const updateAvatar = (req, res) => {
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
-    .then(() => res.status(statusSucces.OK).send({ avatar }))
+    .then(() => res.send({ avatar }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(statusError.BAD_REQUEST).send({ message: 'Переданы некорректные данные' });

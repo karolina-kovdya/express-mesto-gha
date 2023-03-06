@@ -5,7 +5,6 @@ const statusError = {
 };
 
 const statusSucces = {
-  OK: 200,
   CREATED: 201,
 };
 
