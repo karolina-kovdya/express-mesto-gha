@@ -6,7 +6,7 @@ const createCard = (req, res) => {
   const owner = req.user._id;
 
   Card.create({ name, link, owner })
-    .then((card) => res.status(statusSucces.CREATED).send(card))
+    .then((card) => res.status(statusSucces.CREATED).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(statusError.BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
@@ -31,10 +31,10 @@ const deleteCard = (req, res) => {
 
         return;
       }
-      res.status(statusSucces.OK).send({ message: 'Карточка удалена' });
+      res.status(statusSucces.OK).send(card);
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
         res.status(statusError.BAD_REQUEST).send({ message: 'Передан некорректный id' });
 
         return;
