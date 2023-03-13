@@ -1,19 +1,27 @@
+const bcrypt = require('bcrypt');
 const User = require('../models/users');
 const { statusError, statusSucces } = require('../errorStatus');
 
 const createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
 
-  return User.create({ name, about, avatar })
-    .then((user) => res.status(statusSucces.CREATED).send(user))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(statusError.BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    })
+      .then((user) => res.status(statusSucces.CREATED).send(user))
+      .catch((err) => {
+        if (err.name === 'ValidationError') {
+          res.status(statusError.BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
 
-        return;
-      }
-      res.status(statusError.SERVER_ERROR).send({ message: 'Произошла ошибка' });
-    });
+          return;
+        } if (err.code === 11000) {
+          res.status(statusError.CONFLICT).send({ message: 'Пользователь с такими данными уже существует' });
+        }
+        res.status(statusError.SERVER_ERROR).send({ message: 'Произошла ошибка' });
+      }));
 };
 
 const getUser = (req, res) => {
