@@ -49,7 +49,7 @@ const loginUser = (req, res) => {
         sameSite: true,
         maxAge: 3600000 * 24 * 7,
       });
-      res.send({ user, token });
+      res.send({ token });
     })
     .catch((err) => {
       if (err.name === 'Error') {
