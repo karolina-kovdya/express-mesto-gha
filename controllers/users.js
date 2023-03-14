@@ -1,6 +1,9 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const User = require('../models/users');
 const { statusError, statusSucces } = require('../errorStatus');
+
+const { JWT_SECRET = 'some-word' } = process.env;
 
 const createUser = (req, res) => {
   const {
@@ -19,9 +22,43 @@ const createUser = (req, res) => {
           return;
         } if (err.code === 11000) {
           res.status(statusError.CONFLICT).send({ message: 'Пользователь с такими данными уже существует' });
+
+          return;
         }
         res.status(statusError.SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }));
+};
+
+const loginUser = (req, res) => {
+  const { email, password } = req.body;
+  User.findOne({ email })
+    .orFail(() => {
+      throw new Error();
+    })
+    .then((user) => bcrypt.compare(password, user.password)
+      .then((matched) => {
+        if (matched) {
+          return user;
+        }
+        throw new Error();
+      }))
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
+      res.cookie('jwt', token, {
+        httpOnly: true,
+        sameSite: true,
+        maxAge: 3600000 * 24 * 7,
+      });
+      res.send({ user, token });
+    })
+    .catch((err) => {
+      if (err.name === 'Error') {
+        res.status(statusError.UNAUTHORIZED).send({ message: 'Пользователь не найден' });
+
+        return;
+      }
+      res.status(statusError.SERVER_ERROR).send({ message: `Произошла ошибка ${err.name}` });
+    });
 };
 
 const getUser = (req, res) => {
@@ -88,5 +125,5 @@ const updateAvatar = (req, res) => {
 };
 
 module.exports = {
-  createUser, getUser, getUsers, updateUser, updateAvatar,
+  createUser, getUser, getUsers, updateUser, updateAvatar, loginUser,
 };
