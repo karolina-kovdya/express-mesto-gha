@@ -4,20 +4,18 @@ const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { statusError } = require('./errorStatus');
 const { createUser, loginUser } = require('./controllers/users');
+const auth = require('./middlewares/auth');
 
 const app = express();
 
 const { PORT = 3000 } = process.env;
 
 app.use(express.json());
-app.use((req, res, next) => {
-  req.user = { _id: '63ff72b99ae9794447ff4fad' };
-  next();
-});
+app.post('/signin', loginUser);
+app.post('/signup', createUser);
+app.use(auth);
 app.use('/', usersRouter);
 app.use('/', cardsRouter);
-app.post('/sigin', loginUser);
-app.post('/signup', createUser);
 app.use((req, res) => {
   res.status(statusError.NOT_FOUND).send({ message: 'Страница не найдена' });
 });
