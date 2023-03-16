@@ -24,10 +24,16 @@ const getCards = (req, res) => {
 };
 
 const deleteCard = (req, res) => {
+  const owner = req.user._id;
+
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (!card) {
         res.status(statusError.NOT_FOUND).send({ message: 'Карточка не найдена' });
+
+        return;
+      } if (!owner) {
+        res.status(statusError.BAD_REQUEST).send({ message: 'Нет прав на удаление карточки' });
 
         return;
       }
