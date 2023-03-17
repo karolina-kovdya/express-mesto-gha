@@ -2,6 +2,7 @@ const Card = require('../models/cards');
 const { statusSucces } = require('../resStatus');
 const BadRequestError = require('../errors/badRequest_error');
 const NotFoundError = require('../errors/notFound_error');
+const ForbiddenError = require('../errors/forbidden_error');
 
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
@@ -31,7 +32,7 @@ const deleteCard = (req, res, next) => {
       if (!card) {
         throw new NotFoundError('Карточка не найдена');
       } if (!owner) {
-        throw new BadRequestError('Нет прав на удаление карточки');
+        throw new ForbiddenError('Нет прав на удаление карточки');
       }
       res.send(card);
     })
