@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { statusError } = require('../resStatus');
+const UnauthorizedError = require('../errors/unauthorized_error');
 
 const { JWT_SECRET = 'some-word' } = process.env;
 
@@ -7,9 +7,7 @@ const auth = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
-    res.status(statusError.UNAUTHORIZED).send({ message: 'Пользователь не авторизован' });
-
-    return;
+    throw new UnauthorizedError('Пользователь не авторизован');
   }
 
   let payload;
@@ -17,9 +15,7 @@ const auth = (req, res, next) => {
   try {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
-    res.status(statusError.UNAUTHORIZED).send({ message: 'Пользователь не авторизован' });
-
-    return;
+    next(new UnauthorizedError('Пользователь не авторизован'));
   }
 
   req.user = payload;
