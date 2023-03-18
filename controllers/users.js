@@ -22,8 +22,8 @@ const createUser = (req, res, next) => {
         _id: user._id,
         name: user.name,
         about: user.about,
-        email: user.email,
         avatar,
+        email: user.email,
       }))
       .catch((err) => {
         if (err.name === 'ValidationError') {
@@ -66,12 +66,8 @@ const loginUser = (req, res, next) => {
 
 const getUser = (req, res, next) => {
   User.findById(req.params.id)
-    .then((user) => {
-      if (!user) {
-        throw new NotFoundError('Пользователь по указанному id не найден');
-      }
-      res.send(user);
-    })
+    .orFail(() => { throw new NotFoundError('Пользователь по указанному id не найден'); })
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         next(new BadRequestError('Передан некорректный id'));
