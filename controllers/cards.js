@@ -29,14 +29,15 @@ const deleteCard = (req, res, next) => {
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Карточка не найдена');
-      } if (req.user._id !== card.owner._id.toString()) {
-        throw new ForbiddenError('Нет прав на удаление карточки');
       }
-      res.send(card);
+      if (!card.owner.equals(req.user._id)) {
+        throw new ForbiddenError('Нет прав на удаление этой карточки');
+      }
+      res.send({ card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestError('Передан некорректный id'));
+        next(new BadRequestError('Переданы некорректные данные'));
       } else {
         next(err);
       }
