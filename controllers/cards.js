@@ -29,11 +29,18 @@ const deleteCard = (req, res, next) => {
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Карточка не найдена');
-      } if (req.user._id !== card.owner._id) {
+      } if (req.user._id !== card.owner._id.toString()) {
         throw new ForbiddenError('Нет прав на удаление карточки');
-      } res.send(card);
+      }
+      res.send(card);
     })
-    .catch((err) => next(err));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new BadRequestError('Передан некорректный id'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 const likeCard = (req, res, next) => {
