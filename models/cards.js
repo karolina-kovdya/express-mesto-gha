@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const validLink = /^(https?:\/\/)?(w{3}\.)?[a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$/;
+
 const cardSchema = new mongoose.Schema({
   name: {
     required: true,
@@ -10,10 +12,7 @@ const cardSchema = new mongoose.Schema({
   link: {
     required: true,
     type: String,
-    validate: {
-      validator: (url) => this.validator.isUrl(url),
-      message: 'Поле заполнено не корректно',
-    },
+    match: validLink,
   },
   owner: {
     required: true,
