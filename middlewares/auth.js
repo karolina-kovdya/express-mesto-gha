@@ -6,7 +6,7 @@ const { JWT_SECRET = 'some-word' } = process.env;
 const auth = (req, res, next) => {
   const { authorization } = req.headers;
 
-  if (!authorization) {
+  if (!authorization || !authorization.startsWith('Bearer ')) {
     throw new UnauthorizedError('Пользователь не авторизован');
   }
 
